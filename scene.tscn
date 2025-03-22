@@ -1,0 +1,42 @@
+[gd_scene load_steps=9 format=3 uid="uid://b123j6ahwxuk7"]
+
+[ext_resource type="Shader" path="res://tex1.gdshader" id="1_cpb7u"]
+[ext_resource type="Shader" path="res://plane.gdshader" id="2_lh7ro"]
+[ext_resource type="Texture2D" uid="uid://cjuqldtgawpln" path="res://exemplar.exr" id="2_qku2u"]
+[ext_resource type="Texture2D" uid="uid://cqerpr03jtwfg" path="res://profile_map.exr" id="3_evs7g"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ubdys"]
+shader = ExtResource("1_cpb7u")
+shader_parameter/printgrid = false
+shader_parameter/uSamplerAlbedo = ExtResource("2_qku2u")
+shader_parameter/uSamplerTransfer = ExtResource("3_evs7g")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_6su1o"]
+viewport_path = NodePath("Texture avant triangle")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7obvg"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_lh7ro")
+shader_parameter/tex = SubResource("ViewportTexture_6su1o")
+
+[sub_resource type="QuadMesh" id="QuadMesh_5ar6d"]
+material = SubResource("ShaderMaterial_7obvg")
+subdivide_width = 64
+subdivide_depth = 64
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Texture avant triangle" type="SubViewport" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Texture avant triangle"]
+material = SubResource("ShaderMaterial_ubdys")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_5ar6d")
