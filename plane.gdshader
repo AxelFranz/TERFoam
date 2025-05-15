@@ -1,11 +1,11 @@
 shader_type spatial;
-render_mode unshaded;
+//render_mode unshaded;
 uniform bool printgrid = false;
 uniform sampler2D uSamplerAlbedo : repeat_enable, filter_linear_mipmap;
 uniform sampler2D uSamplerTransfer : repeat_disable;
 
 #define ANIM_TUILE
-#define ANIM_ROTA
+//#define ANIM_ROTA
 //#define ANIM_UV
 
 vec2 hash(in ivec2 p) {
@@ -125,15 +125,36 @@ void vertex() {
     #endif
     h = texture(uSamplerTransfer, res * 0.5 + 0.5).r / (2.0 * PI * 5.0);
     VERTEX.y += h;
-}
+}   
 
 void fragment() {
-    /*vec2 res = tiling_n_blending(UV,uSamplerAlbedo, dFdx(UV), dFdy(UV)).xy;
-    ALBEDO = vec3(res+0.1,0.f);*/
+    vec2 res = tiling_n_blending(UV,uSamplerAlbedo, dFdx(UV), dFdy(UV)).xy;
+    res = normalize(res) * tanh(length(res));
+    #ifdef ANIM_ROTA
+    res = rota(TIME*360.f,res);
+    #endif
+    float newh = texture(uSamplerTransfer, res * 0.5 + 0.5).r / (2.0 * PI * 5.0);
+    float value = tanh(newh*10.0-1.0) * 0.5 + 0.5;
     
-    ALBEDO = vec3(h+0.1);
+    mat2 dUV = mat2(
+        dFdx(UV),
+        dFdy(UV)
+    );
+    vec2 dh = vec2(
+        dFdx(h),
+        dFdy(h)
+    );
+    vec2 slope = inverse(transpose(dUV)) * dh;
+    NORMAL = normalize(vec3(slope.x, 1, slope.y));
+    
+    
+    ROUGHNESS = 0.1f;
+    ALBEDO = vec3(0.0);
+    
+    ALBEDO = mix(vec3(0,0,1),vec3(1,1,1),value) * .15; 
+    //ALBEDO = vec3(value,value,value);
+    //ALBEDO = vec3(0.f,0.f,h+0.1);
 }
-
 //void light() {
 	// Called for every pixel for every light affecting the material.
 	// Uncomment to replace the default light processing function with this one.

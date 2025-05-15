@@ -1,8 +1,21 @@
-[gd_scene load_steps=6 format=3 uid="uid://b123j6ahwxuk7"]
+[gd_scene load_steps=9 format=3 uid="uid://b123j6ahwxuk7"]
 
 [ext_resource type="Shader" path="res://plane.gdshader" id="2_lh7ro"]
 [ext_resource type="Texture2D" uid="uid://cjuqldtgawpln" path="res://exemplar.exr" id="2_qku2u"]
 [ext_resource type="Texture2D" uid="uid://cqerpr03jtwfg" path="res://profile_map.exr" id="3_evs7g"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_muytq"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_y6t8t"]
+sky_material = SubResource("ProceduralSkyMaterial_muytq")
+
+[sub_resource type="Environment" id="Environment_uirsg"]
+background_mode = 2
+sky = SubResource("Sky_y6t8t")
+tonemap_mode = 2
+glow_enabled = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jcvaa"]
 resource_local_to_scene = true
@@ -14,10 +27,20 @@ shader_parameter/uSamplerTransfer = ExtResource("3_evs7g")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_vf6eg"]
 material = SubResource("ShaderMaterial_jcvaa")
-subdivide_width = 256
-subdivide_depth = 256
+subdivide_width = 512
+subdivide_depth = 512
 
 [node name="Node3D" type="Node3D"]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_uirsg")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_vf6eg")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.52993, 0.494919, -0.688643, 0, 0.812039, 0.583603, 0.848041, -0.309269, 0.430324, -1.82832, 1.33419, 1.02411)
