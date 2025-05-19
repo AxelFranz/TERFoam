@@ -4,8 +4,8 @@ uniform bool printgrid = false;
 uniform sampler2D uSamplerAlbedo : repeat_enable, filter_linear_mipmap;
 uniform sampler2D uSamplerTransfer : repeat_disable;
 
-#define ANIM_TUILE
-//#define ANIM_ROTA
+//#define ANIM_TUILE
+#define ANIM_ROTA
 //#define ANIM_UV
 
 vec2 hash(in ivec2 p) {
